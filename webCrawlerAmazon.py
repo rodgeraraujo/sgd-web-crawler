@@ -1,20 +1,31 @@
 
 import requests
 from bs4 import BeautifulSoup
-def webpage(pagina,paginaUrl):
-    if(pagina>0):
-        url = paginaUrl
-        codigo = requests.get(url)
-        plain = codigo.text
-        codigoHtml = BeautifulSoup(plain, "html.parser")
-        for link in codigoHtml.findAll('a', {'class':'s-access-detail-page'}):
-            conteudo = link.get('title')
-            print('Nome: ' + conteudo)
-            conteudo_2 = link.get('href')
-            print('Link: ' + conteudo_2)
-            print("")
 
-url1 = 'https://www.amazon.com/s/ref=nb_sb_ss_c_1_9?url=search-alias%3Daps&field-keywords=j+r+r+tolkien&sprefix=j+r+r+tol%2Caps%2C217&crid=3PDZI2FLKJ0HW'
-url2 = 'https://www.amazon.com/b/ref=sr_aj?node=16197&ajr=2' 
 
-webpage(1, url2)
+def imprimeInfo(titulo, resumo, autor, imagem, link):
+    print "Titulo: " + titulo.text.lstrip() + "\n"
+    print "Resumo: " + resumo.string + "\n"
+    print "Autor: " + autor.string + "\n"
+    print "Imagem: " + imagem.get('src') + "\n"
+    print "Link: " + link.get('href') + "\n"
+    print "--------------------------------------------------------------------------\n"
+
+
+def crawlerWebPage(pagina, paginaUrl):
+    if(pagina > 0):
+        codigo = requests.get(paginaUrl)
+        paginaHTML = BeautifulSoup(codigo.content, "html.parser")
+
+        for noticia in paginaHTML.findAll('article', {'itemtype': 'http://schema.org/NewsArticle'}):
+            titulo = noticia.find('h2', {'class': 'headline'})
+            resumo = noticia.find('p', {'itemprop': 'description'})
+            autor = noticia.find('p', {'itemprop': 'author'})
+            imagem = noticia.find('img', {'role': 'presentation'})
+            link = noticia.find('a', {'class': 'story-link'})
+
+            imprimeInfo(titulo, resumo, autor, imagem, link)
+
+
+url = 'https://www.nytimes.com/topic/destination/brazil'
+crawlerWebPage(1, url)
