@@ -1,16 +1,23 @@
-
 import requests
 from bs4 import BeautifulSoup
 
+def salvaEmTXT(titulo, resumo, autor, imagem, link):
+    filePath = "newsText.txt"
+    file = open('newsText.txt', 'a')   
+    file.write(
+        "Titulo: " + titulo.text.lstrip() + "\n" + 
+        "Resumo: " + resumo.string + "\n" + 
+        "Autor: " + autor.string + "\n" + 
+        "Imagem: " + imagem + "\n" + 
+        "Link: " + link + "\n" + 
+        "--------------------------------------------------------------------------\n")
+    file.close()
 
-def imprimeInfo(titulo, resumo, autor, imagem, link):
-    print "Titulo: " + titulo.text.lstrip() + "\n"
-    print "Resumo: " + resumo.string + "\n"
-    print "Autor: " + autor.string + "\n"
-    print "Imagem: " + imagem + "\n"
-    print "Link: " + link + "\n"
-    print "--------------------------------------------------------------------------\n"
-
+def imprimeTXT():
+    f = open('newsText.txt','r')
+    newsText = f.read()
+    print(newsText)
+    f.close()
 
 def crawlerWebPage(pagina, paginaUrl):
     if(pagina > 0):
@@ -24,7 +31,8 @@ def crawlerWebPage(pagina, paginaUrl):
             imagem = noticia.find('img', {'role': 'presentation'}).get('src')
             link = noticia.find('a', {'class': 'story-link'}).get('href')
 
-            imprimeInfo(titulo, resumo, autor, imagem, link)
+            salvaEmTXT(titulo, resumo, autor, imagem, link)
+            imprimeTXT()
 
 
 url = 'https://www.nytimes.com/topic/destination/brazil'
