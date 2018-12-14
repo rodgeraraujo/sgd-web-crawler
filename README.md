@@ -26,5 +26,5 @@ Usage
 4. Run project
 
 ```
-    python webCrawlerAmazon.py
+    python webCrawler.py
 ```
